@@ -1,8 +1,7 @@
 #pragma once
 
 #include <iterator>
-#include <memory>
-#include <vector>
+#include <type_traits>
 
 
 /*
@@ -54,74 +53,6 @@ parts<C_tag> c; // has do_A(), do_B() and do_C()
 
 */
 
-
-template<typename T>
-struct reference_converter
-{
-
-};
-
-
-//------- raw pointers
-
-
-template<typename T>
-struct reference_converter<std::unique_ptr<T>>
-{
-    using actual_type = std::unique_ptr<T>;
-    using value_type = T;
-    using reference_type = T&;
-    using const_reference_type = const T&;
-    using pointer_type = T*;
-    using const_pointer_type = const T*;
-
-    static reference_type get_reference(const actual_type& from_value)
-    {
-        return *from_value;
-    }
-    
-    static pointer_type get_pointer(const actual_type& from_value)
-    {
-        return from_value.get();
-    }
-};
-
-// template<typename T>
-// struct reference_converter<std::unique_ptr<const T>>
-// {
-//     using actual_type = std::unique_ptr<const T>;
-//     using value_type = T;
-//     using reference_type = T&;
-//     using const_reference_type = const T&;
-//     using pointer_type = T*;
-//     using const_pointer_type = const T*;
-
-//     const_reference_type operator()(const actual_type& from_value)
-//     {
-//         return *from_value;
-//     }
-// };
-
-
-
-
-template<typename Iterator>
-struct standard_iterator_adapter
-{
-    using adapted_type = typename std::iterator_traits<Iterator>::value_type;
-    using adapted_type_pointer = typename std::iterator_traits<Iterator>::pointer;
-    using adapted_type_reference = typename std::iterator_traits<Iterator>::reference;
-
-    static adapted_type_reference get_reference(const Iterator& source)
-    {
-        return *source;
-    }
-    
-    static adapted_type_pointer get_pointer(const Iterator& source)
-    {
-        return source.operator->();
-    }
-};
 
 
 template<typename T>
@@ -270,101 +201,33 @@ class converting_iterator
 };
 
 
-template<typename Iterator>
-struct pointer_iterator_adapter
-{
-    using adapted_type = typename std::iterator_traits<Iterator>::value_type*;
-    using adapted_type_pointer = typename std::iterator_traits<Iterator>::value_type*;
-    using adapted_type_reference = typename std::iterator_traits<Iterator>::value_type*;
 
-    // This is not safe!
-    static adapted_type_reference get_reference(const Iterator& source)
+
+template<typename T>
+struct reference_converter
+{
+
+};
+
+template<typename T>
+struct reference_converter<std::unique_ptr<T>>
+{
+    using actual_type = std::unique_ptr<T>;
+    using value_type = T;
+    using reference_type = T&;
+    using const_reference_type = const T&;
+    using pointer_type = T*;
+    using const_pointer_type = const T*;
+
+    static reference_type get_reference(const actual_type& from_value)
     {
-        return &(*source);
+        return *from_value;
     }
     
-    static adapted_type_pointer get_pointer(const Iterator& source)
+    static pointer_type get_pointer(const actual_type& from_value)
     {
-        return source.operator->();
+        return from_value.get();
     }
-};
-
-// These partial specializations are next to impossible, if we only have the type of the iterator
-template<typename Iterator>
-struct pointer_iterator_adapter<>
-{
-    using adapted_type = typename std::iterator_traits<Iterator>::value_type;
-    using adapted_type_pointer = typename std::iterator_traits<Iterator>::pointer;
-    using adapted_type_reference = typename std::iterator_traits<Iterator>::reference;
-
-    static adapted_type_reference get_reference(const Iterator& source)
-    {
-        return *source;
-    }
-    
-    static adapted_type_pointer get_pointer(const Iterator& source)
-    {
-        return source.operator->();
-    }
-};
-
-template<typename Iterator>
-struct reference_iterator_adapter
-{
-    using adapted_type = typename std::iterator_traits<Iterator>::value_type;
-    using adapted_type_pointer = typename std::iterator_traits<Iterator>::pointer;
-    using adapted_type_reference = typename std::iterator_traits<Iterator>::reference;
-
-    static adapted_type_reference get_reference(const Iterator& source)
-    {
-        return *source;
-    }
-    
-    static adapted_type_pointer get_pointer(const Iterator& source)
-    {
-        return source.operator->();
-    }
-};
-
-
-
-template<typename SourceIterator, typename IteratorAdapter>
-class adapting_iterator
-{
-
-};
-
-
-template <typename IteratorTag, typename Enable = void>
-struct value_iterator_bidirectional_part
-{ };
-
-template <typename IteratorTag>
-struct value_iterator_bidirectional_part<IteratorTag, 
-    std::enable_if_t<
-        std::is_base_of_v<std::bidirectional_iterator_tag, IteratorTag>>>
-{
-    void sometimes()
-    {
-
-    }
-
-};
-
-template <typename IteratorTag, typename Enable = void>
-struct value_iterator_random_access_part
-{ };
-
-template <typename IteratorTag>
-struct value_iterator_random_access_part<IteratorTag, 
-    std::enable_if_t<
-        std::is_base_of_v<std::random_access_iterator_tag, IteratorTag>>>
-{
-    void sometimes()
-    {
-
-    }
-
 };
 
 
@@ -504,45 +367,3 @@ private:
     container_iterator m_iterator;
 
 };
-
-
-
-/*
-template<typename UnderlyingType>
-class reference_view
-{
-public:
-
-    using presented_data_type = PresentedType;
-    using underlying_data_type = UnderlyingType;
-    using container_type = std::vector<underlying_data_type>;
-
-    reference_view(container_type& data)
-    {
-
-    }
-
-private:
-
-
-};
-
-template<typename PresentedType, typename UnderlyingType>
-class const_reference_view
-{
-public:
-
-    using presented_data_type = PresentedType;
-    using underlying_data_type = UnderlyingType;
-    using container_type = std::vector<underlying_data_type>;
-
-    const_reference_view(const container_type& data)
-    {
-
-    }
-
-private:
-
-
-};
-*/
