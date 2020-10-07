@@ -218,32 +218,52 @@ struct converting_iterator_forward_part
 
 
 template<typename SourceIterator, typename Converter, typename Enable = void>
-struct converting_iterator_bidirectional_part : converting_iterator_forward_part<SourceIterator, Converter>
+struct converting_iterator_bidirectional_part 
+    : converting_iterator_forward_part<SourceIterator, Converter>
 {
     // leave empty
 };
 
 template<typename SourceIterator, typename Converter>
-struct converting_iterator_bidirectional_part<SourceIterator, Converter, /*enable if fluff*/> : converting_iterator_forward_part<SourceIterator, Converter>
+struct converting_iterator_bidirectional_part<
+        SourceIterator, 
+        Converter,
+        std::enable_if_t<
+            std::is_base_of_v<
+                typename std::iterator_traits<SourceIterator>::iterator_category, 
+                std::bidirectional_iterator_tag
+            >
+        >
+    > : converting_iterator_forward_part<SourceIterator, Converter>
 {
     // bidirectional iterator functions.
 };
 
 
 template<typename SourceIterator, typename Converter, typename Enable = void>
-struct converting_iterator_random_access_part : converting_iterator_bidirectional_part<SourceIterator, Converter>
+struct converting_iterator_random_access_part 
+    : converting_iterator_bidirectional_part<SourceIterator, Converter>
 {
     // leave empty
 };
 
 template<typename SourceIterator, typename Converter>
-struct converting_iterator_random_access_part<SourceIterator, Converter, /*enable if fluff*/> : converting_iterator_bidirectional_part<SourceIterator, Converter>
+struct converting_iterator_random_access_part<
+        SourceIterator, 
+        Converter,
+        std::enable_if_t<
+            std::is_base_of_v<
+                typename std::iterator_traits<SourceIterator>::iterator_category, 
+                std::random_access_iterator_tag
+            >
+        >
+    > : converting_iterator_bidirectional_part<SourceIterator, Converter>
 {
     // bidirectional iterator functions.
 };
 
 
-template<typename SourceIterator, typename Converter = convert_to_pointer<std::iterator_traits<SourceIterator>::value_type>>
+template<typename SourceIterator, typename Converter /* = convert_to_pointer<std::iterator_traits<SourceIterator>::value_type> */>
 class converting_iterator
 {
 
