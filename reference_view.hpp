@@ -157,7 +157,7 @@ struct convert_to_pointer
     {
         return &input_value;
     }
-}
+};
 
 template<typename T>
 struct convert_to_pointer<T*>
@@ -182,7 +182,7 @@ struct convert_to_pointer<T*>
     {
         return input_value;
     }
-}
+};
 
 template<typename T>
 struct convert_to_pointer<std::unique_ptr<T>>
@@ -207,7 +207,7 @@ struct convert_to_pointer<std::unique_ptr<T>>
     {
         return input_value.get();
     }
-}
+};
 
 
 template<typename SourceIterator, typename Converter>
