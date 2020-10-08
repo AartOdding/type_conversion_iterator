@@ -4,6 +4,8 @@
 #include <type_traits>
 
 
+#include <memory> // remove later
+
 /*
 
 // The following pattern is used to incrementally give the iterator its functionality.
@@ -70,21 +72,21 @@ struct convert_to_pointer
 {
     using input_type = T;
 
-    using converted_value_type = T*;
-    using converted_reference = T*;
-    using converted_pointer = T*;
+    using output_value_type = T*;
+    using output_reference = T*;
+    using output_pointer = T*;
     
-    static converted_value_type convert_to_value_type(const input_type& input_value)
+    static output_value_type convert_to_value_type(const input_type& input_value)
     {
         return &input_value;
     }
 
-    static converted_reference convert_to_reference(const input_type& input_value)
+    static output_reference convert_to_reference(const input_type& input_value)
     {
         return &input_value;
     }
 
-    static converted_pointer convert_to_pointer(const input_type& input_value)
+    static output_pointer convert_to_pointer(const input_type& input_value)
     {
         return &input_value;
     }
@@ -139,68 +141,6 @@ struct convert_to_pointer<std::unique_ptr<T>>
         return input_value.get();
     }
 };
-
-
-template<typename SourceIterator, typename Converter>
-struct converting_iterator_forward_part
-{
-    SourceIterator m_iterator;
-};
-
-
-template<typename SourceIterator, typename Converter, typename Enable = void>
-struct converting_iterator_bidirectional_part 
-    : converting_iterator_forward_part<SourceIterator, Converter>
-{
-    // leave empty
-};
-
-template<typename SourceIterator, typename Converter>
-struct converting_iterator_bidirectional_part<
-        SourceIterator, 
-        Converter,
-        std::enable_if_t<
-            std::is_base_of_v<
-                typename std::iterator_traits<SourceIterator>::iterator_category, 
-                std::bidirectional_iterator_tag
-            >
-        >
-    > : converting_iterator_forward_part<SourceIterator, Converter>
-{
-    // bidirectional iterator functions.
-};
-
-
-template<typename SourceIterator, typename Converter, typename Enable = void>
-struct converting_iterator_random_access_part 
-    : converting_iterator_bidirectional_part<SourceIterator, Converter>
-{
-    // leave empty
-};
-
-template<typename SourceIterator, typename Converter>
-struct converting_iterator_random_access_part<
-        SourceIterator, 
-        Converter,
-        std::enable_if_t<
-            std::is_base_of_v<
-                typename std::iterator_traits<SourceIterator>::iterator_category, 
-                std::random_access_iterator_tag
-            >
-        >
-    > : converting_iterator_bidirectional_part<SourceIterator, Converter>
-{
-    // bidirectional iterator functions.
-};
-
-
-template<typename SourceIterator, typename Converter /* = convert_to_pointer<std::iterator_traits<SourceIterator>::value_type> */>
-class converting_iterator
-{
-
-};
-
-
 
 
 template<typename T>
