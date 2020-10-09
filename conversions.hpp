@@ -148,3 +148,52 @@ struct reference_conversion<std::shared_ptr<T>>
         return *input.get();
     }
 };
+
+
+template<typename T>
+struct const_reference_conversion
+{
+    using input_type = T;
+    using output_type = const T&;
+
+    static output_type convert(const input_type& input)
+    {
+        return input;
+    }
+};
+
+template<typename T>
+struct const_reference_conversion<T*>
+{
+    using input_type = T*;
+    using output_type = const T&;
+
+    static output_type convert(const input_type& input)
+    {
+        return *input;
+    }
+};
+
+template<typename T>
+struct const_reference_conversion<std::unique_ptr<T>>
+{
+    using input_type = std::unique_ptr<T>;
+    using output_type = const T&;
+
+    static output_type convert(const input_type& input)
+    {
+        return *input.get();
+    }
+};
+
+template<typename T>
+struct const_reference_conversion<std::shared_ptr<T>>
+{
+    using input_type = std::shared_ptr<T>;
+    using output_type = const T&;
+
+    static output_type convert(const input_type& input)
+    {
+        return *input.get();
+    }
+};
