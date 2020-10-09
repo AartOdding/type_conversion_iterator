@@ -61,22 +61,39 @@ int main()
     std::vector<int> v{1, 2, 3, 4, 5, 6, 7, 8, 8};
     std::forward_list<int> f{1, 2, 3, 4, 5, 6, 7, 8, 8};
 
+    std::list<std::unique_ptr<const int>> lu;
+    lu.emplace_back(new int(1));
+    lu.emplace_back(new int(2));
+    lu.emplace_back(new int(3));
+    lu.emplace_back(new int(4));
+    lu.emplace_back(new int(5));
+    lu.emplace_back(new int(6));
+
+    const auto& clu = lu;
+
+    const_pointer_view<decltype(lu)> lu_view{ lu };
+    for (auto p : lu_view)
+    {
+        //*p = 100 - *p;
+        std::cout << p << "\t" << *p << std::endl;
+    }
+
     pointer_view<std::list<int>> list_view{ l };
     for (auto p : list_view)
     {
-        std::cout << p << std::endl;
+        std::cout << p << "\t" << *p << std::endl;
     }
-
+/*
     pointer_view<std::vector<int>> vec_view{ v };
     for (auto p : vec_view)
     {
-        std::cout << p << std::endl;
-    }
+        std::cout << p << "\t" << *p << std::endl;
+    }*/
 
     pointer_view<std::forward_list<int>> fw_view{ f };
     for (auto p : fw_view)
     {
-        std::cout << p << std::endl;
+        std::cout << p << "\t" << *p << std::endl;
     }
 
 
