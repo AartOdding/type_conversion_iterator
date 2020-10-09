@@ -29,9 +29,9 @@ public:
     // typedefs so type_conversion_iterator can be used in std::iterator_traits:
     using iterator_category = typename std::iterator_traits<SourceIterator>::iterator_category;
     using difference_type = typename std::iterator_traits<SourceIterator>::difference_type;
-    using value_type = typename Conversion::output_value_type;
-    using reference = typename Conversion::output_reference_type;
-    using pointer = typename Conversion::output_pointer_type;
+    using value_type = typename Conversion::output_type;
+    using reference = typename Conversion::output_type;
+    using pointer = typename Conversion::output_type;
     
     // requirements of std::forward_iterator concept
     type_conversion_iterator() = default;
@@ -41,11 +41,11 @@ public:
     type_conversion_iterator& operator=(const type_conversion_iterator&) = default;
 
     reference operator*() const {
-        return Conversion::get_reference(*m_iterator);
+        return Conversion::convert(*m_iterator);
     }
 
     pointer operator->() const {
-        return Conversion::get_pointer(*m_iterator);
+        return Conversion::convert(*m_iterator);
     }
     
     type_conversion_iterator& operator++() {
@@ -85,9 +85,9 @@ public:
     // typedefs so type_conversion_iterator can be used in std::iterator_traits:
     using iterator_category = typename std::iterator_traits<SourceIterator>::iterator_category;
     using difference_type = typename std::iterator_traits<SourceIterator>::difference_type;
-    using value_type = typename Conversion::output_value_type;
-    using reference = typename Conversion::output_reference_type;
-    using pointer = typename Conversion::output_pointer_type;
+    using value_type = typename Conversion::output_type;
+    using reference = typename Conversion::output_type;
+    using pointer = typename Conversion::output_type;
     
     // requirements of std::forward_iterator concept
     type_conversion_iterator() = default;
@@ -97,11 +97,11 @@ public:
     type_conversion_iterator& operator=(const type_conversion_iterator&) = default;
 
     reference operator*() const {
-        return Conversion::get_reference(*m_iterator);
+        return Conversion::convert(*m_iterator);
     }
 
     pointer operator->() const {
-        return Conversion::get_pointer(*m_iterator);
+        return Conversion::convert(*m_iterator);
     }
     
     type_conversion_iterator& operator++() {
@@ -151,9 +151,9 @@ public:
     // typedefs so type_conversion_iterator can be used in std::iterator_traits:
     using iterator_category = typename std::iterator_traits<SourceIterator>::iterator_category;
     using difference_type = typename std::iterator_traits<SourceIterator>::difference_type;
-    using value_type = typename Conversion::output_value_type;
-    using reference = typename Conversion::output_reference_type;
-    using pointer = typename Conversion::output_pointer_type;
+    using value_type = typename Conversion::output_type;
+    using reference = typename Conversion::output_type;
+    using pointer = typename Conversion::output_type;
     
     // requirements of std::forward_iterator concept
     type_conversion_iterator() = default;
@@ -163,11 +163,11 @@ public:
     type_conversion_iterator& operator=(const type_conversion_iterator&) = default;
 
     reference operator*() const {
-        return Conversion::get_reference(*m_iterator);
+        return Conversion::convert(*m_iterator);
     }
 
     pointer operator->() const {
-        return Conversion::get_pointer(*m_iterator);
+        return Conversion::convert(*m_iterator);
     }
     
     type_conversion_iterator& operator++() {
@@ -221,7 +221,7 @@ public:
     }
 
     reference operator[](const difference_type offset) const {
-        return Conversion::get_reference(m_iterator[offset]);
+        return Conversion::convert(m_iterator[offset]);
     }
     
     bool operator<(const type_conversion_iterator& right) const {

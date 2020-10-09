@@ -1,6 +1,5 @@
 
-#include "type_conversion_iterator.hpp"
-#include "reference_view.hpp"
+#include "views.hpp"
 
 #include <iostream>
 
@@ -58,29 +57,48 @@ struct simple_view
 
 int main()
 {
-    std::list<int> l;
-    std::vector<int> v;
-    std::forward_list<int> f;
+    std::list<int> l{1, 2, 3, 4, 5, 6, 7, 8, 8};
+    std::vector<int> v{1, 2, 3, 4, 5, 6, 7, 8, 8};
+    std::forward_list<int> f{1, 2, 3, 4, 5, 6, 7, 8, 8};
 
-    std::list<int>::iterator::iterator_category;
-
-    type_conversion_iterator<decltype(l)::iterator, convert_to_pointer<int>> l_it;
-    type_conversion_iterator<decltype(v)::iterator, convert_to_pointer<int>> v_it;
-    type_conversion_iterator<decltype(f)::iterator, convert_to_pointer<int>> f_it;
-
-    v.insert(v.begin(), {10, 12, 12, 434, 2133, 1, 54});
-
-    using v_iter = type_conversion_iterator<
-        std::vector<int>::iterator, convert_to_pointer<int>>;
-    
-    simple_view<v_iter> maView;
-    maView.beginIt = v_iter(v.begin());
-    maView.endIt =  v_iter(v.end());
-
-    for (auto i : maView)
+    pointer_view<std::list<int>> list_view{ l };
+    for (auto p : list_view)
     {
-        std::cout << i << std::endl;
+        std::cout << p << std::endl;
     }
+
+    pointer_view<std::vector<int>> vec_view{ v };
+    for (auto p : vec_view)
+    {
+        std::cout << p << std::endl;
+    }
+
+    pointer_view<std::forward_list<int>> fw_view{ f };
+    for (auto p : fw_view)
+    {
+        std::cout << p << std::endl;
+    }
+
+
+    // std::list<int>::iterator::iterator_category;
+
+    // type_conversion_iterator<decltype(l)::iterator, convert_to_pointer<int>> l_it;
+    // type_conversion_iterator<decltype(v)::iterator, convert_to_pointer<int>> v_it;
+    // type_conversion_iterator<decltype(f)::iterator, convert_to_pointer<int>> f_it;
+
+    // v.insert(v.begin(), {10, 12, 12, 434, 2133, 1, 54});
+
+    // using v_iter = type_conversion_iterator<
+    //     std::vector<int>::iterator, convert_to_pointer<int>>;
+    
+    // simple_view<v_iter> maView;
+    // maView.beginIt = v_iter(v.begin());
+    // maView.endIt =  v_iter(v.end());
+
+    // for (auto i : maView)
+    // {
+    //     std::cout << i << std::endl;
+    // }
 
 
 };
