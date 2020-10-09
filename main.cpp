@@ -70,7 +70,7 @@ int main()
 
     v.insert(v.begin(), {10, 12, 12, 434, 2133, 1, 54});
 
-    using v_iter = type_conversion_iterator_forward_part<
+    using v_iter = type_conversion_iterator<
         std::vector<int>::iterator, convert_to_pointer<int>>;
     
     simple_view<v_iter> maView;
