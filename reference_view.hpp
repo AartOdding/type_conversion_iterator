@@ -63,8 +63,38 @@ struct no_conversion
     using input_value_type = T;
 
     using output_value_type = T;
-    using output_reference = T&;
-    using output_pointer = T*;
+    using output_reference_type = T&;
+    using output_pointer_type = T*;
+
+    static output_value_type get_value(const input_value_type& input)
+    {
+        return input;
+    }
+
+    static const output_reference_type get_reference(const input_value_type& input)
+    {
+        return input;
+    }
+
+    static output_pointer_type get_pointer(const input_value_type& input)
+    {
+        return &input;
+    }
+    
+    static output_value_type get_value(input_value_type& input)
+    {
+        return input;
+    }
+
+    static output_reference_type get_reference(input_value_type& input)
+    {
+        return input;
+    }
+
+    static output_pointer_type get_pointer(input_value_type& input)
+    {
+        return &input;
+    }
 };
 
 template<typename T>
@@ -73,20 +103,35 @@ struct convert_to_pointer
     using input_type = T;
 
     using output_value_type = T*;
-    using output_reference = T*;
-    using output_pointer = T*;
+    using output_reference_type = T*;
+    using output_pointer_type = T*;
     
-    static output_value_type convert_to_value_type(const input_type& input_value)
+    static output_value_type get_value(const input_type& input_value)
     {
         return &input_value;
     }
 
-    static output_reference convert_to_reference(const input_type& input_value)
+    static const output_reference_type get_reference(const input_type& input_value)
     {
         return &input_value;
     }
 
-    static output_pointer convert_to_pointer(const input_type& input_value)
+    static output_pointer_type get_pointer(const input_type& input_value)
+    {
+        return &input_value;
+    }
+
+    static output_value_type get_value(input_type& input_value)
+    {
+        return &input_value;
+    }
+
+    static output_reference_type get_reference(input_type& input_value)
+    {
+        return &input_value;
+    }
+
+    static output_pointer_type get_pointer(input_type& input_value)
     {
         return &input_value;
     }
@@ -97,26 +142,27 @@ struct convert_to_pointer<T*>
 {
     using input_type = T*;
 
-    using converted_value_type = T*;
-    using converted_reference = T*;
-    using converted_pointer = T*;
+    using output_value_type = T*;
+    using output_reference_type = T*;
+    using output_pointer_type = T*;
 
-    static converted_value_type convert_to_value_type(const input_type& input_value)
+    static output_value_type get_value(const input_type& input_value)
     {
         return input_value;
     }
 
-    static converted_reference convert_to_reference(const input_type& input_value)
+    static output_reference_type get_reference(const input_type& input_value)
     {
         return input_value;
     }
 
-    static converted_pointer convert_to_pointer(const input_type& input_value)
+    static output_pointer_type getpointer(const input_type& input_value)
     {
         return input_value;
     }
 };
 
+/*
 template<typename T>
 struct convert_to_pointer<std::unique_ptr<T>>
 {
@@ -140,7 +186,7 @@ struct convert_to_pointer<std::unique_ptr<T>>
     {
         return input_value.get();
     }
-};
+};*/
 
 
 template<typename T>

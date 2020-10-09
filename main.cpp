@@ -1,9 +1,12 @@
 
-
+#include "type_conversion_iterator.hpp"
+#include "reference_view.hpp"
 
 #include <iostream>
 
 #include <forward_list>
+#include <list>
+#include <vector>
 
 #include <string>
 
@@ -43,14 +46,40 @@ struct fake_view
     fake_iterator end() { return 10; }
 };
 
+template<typename It>
+struct simple_view
+{
+    It beginIt;
+    It endIt;
+
+    It begin() { return beginIt; }
+    It end() { return endIt; }
+};
 
 int main()
 {
-    fake_view v;
+    std::list<int> l;
+    std::vector<int> v;
+    std::forward_list<int> f;
 
-    for (const auto& l : v)
+    std::list<int>::iterator::iterator_category;
+
+    type_conversion_iterator<decltype(l)::iterator, convert_to_pointer<int>> l_it;
+    type_conversion_iterator<decltype(v)::iterator, convert_to_pointer<int>> v_it;
+    type_conversion_iterator<decltype(f)::iterator, convert_to_pointer<int>> f_it;
+
+    v.insert(v.begin(), {10, 12, 12, 434, 2133, 1, 54});
+
+    using v_iter = type_conversion_iterator_forward_part<
+        std::vector<int>::iterator, convert_to_pointer<int>>;
+    
+    simple_view<v_iter> maView;
+    maView.beginIt = v_iter(v.begin());
+    maView.endIt =  v_iter(v.end());
+
+    for (auto i : maView)
     {
-        std::cout << l << std::endl;
+        std::cout << i << std::endl;
     }
 
 
