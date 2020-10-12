@@ -1,6 +1,10 @@
 #pragma once
 
-#include <tci/conversions.hpp>
+#include <map>
+
+#include <tci/conversions/get_pointer_to_second.hpp>
+#include <tci/conversions/get_pointer.hpp>
+#include <tci/conversions/get_reference.hpp>
 #include <tci/type_conversion_iterator.hpp>
 
 
@@ -8,17 +12,17 @@ namespace tci
 {
 
     template<typename Container>
-    class pointer_view
+    class view
     {
         using iterator = type_conversion_iterator<typename Container::iterator, 
-            pointer_conversion<typename Container::value_type>>;
+            conversions::get_pointer<typename Container::value_type>>;
         
         iterator m_begin;
         iterator m_end;
 
     public:
 
-        pointer_view(Container& container)
+        view(Container& container)
             : m_begin(container.begin())
             , m_end(container.end())
         { }
@@ -35,17 +39,17 @@ namespace tci
     };
 
     template<typename Container>
-    class const_pointer_view
+    class const_view
     {
         using iterator = type_conversion_iterator<typename Container::const_iterator, 
-            const_pointer_conversion<typename Container::value_type>>;
+            conversions::get_const_pointer<typename Container::value_type>>;
 
         iterator m_begin;
         iterator m_end;
 
     public:
 
-        const_pointer_view(const Container& container)
+        const_view(const Container& container)
             : m_begin(container.begin())
             , m_end(container.end())
         { }
@@ -60,19 +64,22 @@ namespace tci
             return m_end;
         }
     };
-
+    
     template<typename Container>
-    class reference_view
+    class values_view
     {
+        using key_type = typename Container::key_type;
+        using mapped_type = typename Container::mapped_type;
+
         using iterator = type_conversion_iterator<typename Container::iterator, 
-            reference_conversion<typename Container::value_type>>;
+            conversions::get_pointer_to_second<const key_type, mapped_type>>;
         
         iterator m_begin;
         iterator m_end;
 
     public:
 
-        reference_view(Container& container)
+        values_view(Container& container)
             : m_begin(container.begin())
             , m_end(container.end())
         { }
@@ -89,17 +96,20 @@ namespace tci
     };
 
     template<typename Container>
-    class const_reference_view
+    class const_values_view
     {
+        using key_type = typename Container::key_type;
+        using mapped_type = typename Container::mapped_type;
+
         using iterator = type_conversion_iterator<typename Container::const_iterator, 
-            const_reference_conversion<typename Container::value_type>>;
+            conversions::get_const_pointer_to_second<const key_type, mapped_type>>;
 
         iterator m_begin;
         iterator m_end;
 
     public:
 
-        const_reference_view(const Container& container)
+        const_values_view(const Container& container)
             : m_begin(container.begin())
             , m_end(container.end())
         { }
