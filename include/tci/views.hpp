@@ -4,7 +4,6 @@
 
 #include <tci/conversions/get_pointer_to_second.hpp>
 #include <tci/conversions/get_pointer.hpp>
-#include <tci/conversions/get_reference.hpp>
 #include <tci/type_conversion_iterator.hpp>
 
 
